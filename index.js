@@ -2,18 +2,15 @@ const s = require('underscore.string');
 const _ = require('lodash');
 const slug = require('speakingurl');
 
-const getUniqueSlug = (constructor, _id, str, i = 0) => {
+const getUniqueSlug = (slugField, constructor, _id, str, i = 0) => {
   return new Promise(async (resolve, reject) => {
     try {
       const search = i === 0 ? str : `${str}-${i}`;
-      const count = await constructor.count({
-        _id: {
-          $ne: _id
-        },
-        slug: search
-      });
+      const query = { _id: { $ne: _id } };
+      query[slugField] = search;
+      const count = await constructor.count(query);
       if (count === 0) return resolve(search);
-      resolve(getUniqueSlug(constructor, _id, str, i + 1));
+      resolve(getUniqueSlug(slugField, constructor, _id, str, i + 1));
     } catch (err) {
       reject(err);
     }
@@ -86,6 +83,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
 
       // ensure that the slug is unique
       this[config.slugField] = await getUniqueSlug(
+        config.slugField,
         this.constructor,
         this._id,
         this[config.slugField]
@@ -110,7 +108,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
   });
 
   schema.statics.getUniqueSlug = function(_id, str) {
-    return getUniqueSlug(this.constructor, _id, str);
+    return getUniqueSlug(config.slugField, this.constructor, _id, str);
   };
 
   return schema;

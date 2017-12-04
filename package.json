@@ -132,6 +132,7 @@
           "ignoreUrls": true
         }
       ],
+      "max-params": ["error", 5],
       "capitalized-comments": "off",
       "camelcase": "off",
       "no-warning-comments": "off"
