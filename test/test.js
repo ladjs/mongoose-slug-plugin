@@ -110,4 +110,8 @@ test('support i18n translation using this.locale', async t => {
   const blogPost = await BlogPosts.create({ title });
   t.is(blogPost.slug, slug(title));
 });
+
+test('custom slug options', async t => {
+  // TODO: finish this
+});
 */

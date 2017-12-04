@@ -121,7 +121,7 @@ app.listen(3000);
 > If you're using [Express][], here's an example showing how to lookup a slug or an archived slug and properly 301 redirect:
 
 ```js
-
+TODO
 ```
 
 > Note that you also have access to a static function on the model called `getUniqueSlug`.
@@ -138,12 +138,13 @@ Here are the default options passed to the plugin:
 * `tmpl` (String) - Required, this should be a [lodash template string][lodash-template-string] (e.g. `<%=title%>` to use the blog post title as the slug)
 * `locals` (Object) - Defaults to an empty object, but you can pass a custom object that will be inherited for use in the lodash template string (see above example for how you could use [moment][] to render a document's date formatted in the slug)
 * `alwaysUpdateSlug` (Boolean) - Defaults to `true` (basically this will re-set the slug to the value it should be based off the template string every time the document is validated (or saved for instance due to pre-save hook in turn calling pre-validate in Mongoose)
-* `slug` (Function) - Defaults to `speakingurl`, but it is a function that converts a string into a slug (see below [Custom Slug Libary](#custom-slug-library) examples)
 * `errorMessage` (String) - Defaults to `Slug was missing or blank`, this is a String that is returned for failed validation (note that it gets translated based off the `this.locale` field if it is set on the document (see [Lad][] for more insight into how this works))
 * `logger` (Object) - defaults to `console`, but you might want to use [Lad's logger][lad-logger]
 * `slugField` (String) - defaults to `slug`, this is the field used for storing the slug for the document
 * `historyField` (String) - defaults to `slug_history`, this is the field used for storing a document's slug history
 * `i18n` (Object|Boolean) - defaults to `false`, but accepts a `i18n` object from [Lad's i18n][i18n]
+* `slug` (Function) - Defaults to `speakingurl`, but it is a function that converts a string into a slug (see below [Custom Slug Libary](#custom-slug-library) examples)
+* `slugOptions` (Object) - An object of options to pass to the slug function when invoked as specified in `options.slug`
 
 
 ## Slug Uniqueness

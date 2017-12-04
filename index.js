@@ -31,7 +31,8 @@ const mongooseSlugPlugin = (schema, config = {}) => {
       logger: console,
       slugField: 'slug',
       historyField: 'slug_history',
-      i18n: false
+      i18n: false,
+      slugOptions: {}
     },
     config
   );
@@ -74,10 +75,13 @@ const mongooseSlugPlugin = (schema, config = {}) => {
         s.isBlank(this[config.slugField]) ||
         config.alwaysUpdateSlug
       ) {
-        this[config.slugField] = config.slug(str);
+        this[config.slugField] = config.slug(str, config.slugOptions);
       } else {
         // slugify the slug in case we set it manually and not in slug format
-        this[config.slugField] = config.slug(this[config.slugField]);
+        this[config.slugField] = config.slug(
+          this[config.slugField],
+          config.slugOptions
+        );
       }
 
       // ensure that the slug is unique
