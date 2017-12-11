@@ -15,6 +15,7 @@
 * [Install](#install)
 * [Usage](#usage)
 * [Options](#options)
+* [Slug Tips](#slug-tips)
 * [Slug Uniqueness](#slug-uniqueness)
 * [Custom Slug Library](#custom-slug-library)
 * [Background](#background)
@@ -147,6 +148,15 @@ Here are the default options passed to the plugin:
 * `slugOptions` (Object) - An object of options to pass to the slug function when invoked as specified in `options.slug`
 
 
+## Slug Tips
+
+If you're using the default slug library `speakingurl`, then you might want to pass the option `slugOptions: { "'": '' }` in order to fix contractions.
+
+For example, if your title is "Jason's Blog Post", you probably want the slug to be "jasons-blog-post" as opposed to "jason-s-blog-post".  This option will fix that.
+
+See [pid/speakingurl#105](https://github.com/pid/speakingurl/issues/105) for more information.
+
+
 ## Slug Uniqueness
 
 If a slug of "foo-bar" already exists, and if we are inserting a new document that also has a slug of "foo-bar", then this new slug will automatically become "foo-bar-1".
@@ -213,7 +223,7 @@ I created this package despite knowing that other alternatives like it exist for
 [MIT](LICENSE) © [Nick Baugh](http://niftylettuce.com/)
 
 
-## 
+##
 
 [npm]: https://www.npmjs.com/
 
