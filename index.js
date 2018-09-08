@@ -2,37 +2,29 @@ const s = require('underscore.string');
 const _ = require('lodash');
 const slug = require('speakingurl');
 
-const getUniqueSlug = (slugField, constructor, _id, str, i = 0) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const search = i === 0 ? str : `${str}-${i}`;
-      const query = { _id: { $ne: _id } };
-      query[slugField] = search;
-      const count = await constructor.count(query);
-      if (count === 0) return resolve(search);
-      resolve(getUniqueSlug(slugField, constructor, _id, str, i + 1));
-    } catch (err) {
-      reject(err);
-    }
-  });
+const getUniqueSlug = async (slugField, constructor, _id, str, i = 0) => {
+  const search = i === 0 ? str : `${str}-${i}`;
+  const query = { _id: { $ne: _id } };
+  query[slugField] = search;
+  const count = await constructor.count(query);
+  if (count === 0) return search;
+  return getUniqueSlug(slugField, constructor, _id, str, i + 1);
 };
 
 const mongooseSlugPlugin = (schema, config = {}) => {
-  config = Object.assign(
-    {
-      tmpl: '',
-      locals: {},
-      alwaysUpdateSlug: true,
-      slug,
-      errorMessage: 'Slug was missing or blank',
-      logger: console,
-      slugField: 'slug',
-      historyField: 'slug_history',
-      i18n: false,
-      slugOptions: {}
-    },
-    config
-  );
+  config = {
+    tmpl: '',
+    locals: {},
+    alwaysUpdateSlug: true,
+    slug,
+    errorMessage: 'Slug was missing or blank',
+    logger: console,
+    slugField: 'slug',
+    historyField: 'slug_history',
+    i18n: false,
+    slugOptions: {},
+    ...config
+  };
 
   const obj = {};
   obj[config.slugField] = {
@@ -64,7 +56,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
 
   schema.pre('validate', async function(next) {
     try {
-      const locals = Object.assign({}, config.locals, this.toObject());
+      const locals = { ...config.locals, ...this.toObject() };
       const str = _.template(config.tmpl)(locals);
 
       // set the slug if it is not already set
@@ -83,12 +75,13 @@ const mongooseSlugPlugin = (schema, config = {}) => {
       }
 
       // ensure that the slug is unique
-      this[config.slugField] = await getUniqueSlug(
+      const uniqueSlug = await getUniqueSlug(
         config.slugField,
         this.constructor,
         this._id,
         this[config.slugField]
       );
+      this[config.slugField] = uniqueSlug;
 
       // create slug history if it does not exist yet
       if (!Array.isArray(this[config.historyField]))
@@ -101,10 +94,10 @@ const mongooseSlugPlugin = (schema, config = {}) => {
       this[config.historyField] = _.uniq(this[config.historyField]);
 
       next();
-    } catch (err) {
-      config.logger.error(err);
-      err.message = config.i18n.t(config.errorMessage, this.locale);
-      next(err);
+    } catch (error) {
+      config.logger.error(error);
+      error.message = config.i18n.t(config.errorMessage, this.locale);
+      next(error);
     }
   });
 

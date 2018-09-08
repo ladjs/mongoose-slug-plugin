@@ -3,11 +3,14 @@ const moment = require('moment');
 const mongoose = require('mongoose');
 const slug = require('speakingurl');
 
-const mongooseSlugPlugin = require('../');
+const mongooseSlugPlugin = require('..');
 
-mongoose.connect('mongodb://localhost/mongoose_slug_plugin', {
-  useMongoClient: true
-});
+mongoose.connect(
+  'mongodb://localhost/mongoose_slug_plugin',
+  {
+    useMongoClient: true
+  }
+);
 mongoose.Promise = global.Promise;
 
 const BlogPost = new mongoose.Schema({
