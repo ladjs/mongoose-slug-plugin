@@ -5,15 +5,13 @@ const _ = require('lodash');
 const slug = require('speakingurl');
 
 const getUniqueSlug = async (config, constructor, _id, str, i = 0) => {
+  console.log(`getUniqueSlug ID: ${_id}, STR: ${str}, I: ${i}`);
   if (s.isBlank(str)) throw new Error('The `str` argument was missing');
   const search = i === 0 ? str : `${str}-${i}`;
   const query = { _id: { $ne: _id } };
-  const options = {};
   query[config.slugField] = search;
-  // support paranoid hidden field if it was set
   if (config.paranoid === 'hidden') query.hidden = { $ne: null };
-  else if (config.paranoid) options.paranoid = false;
-  const count = await constructor.count(query, options);
+  const count = await constructor.count(query);
   if (count === 0) return search;
   return getUniqueSlug(config, constructor, _id, str, i + 1);
 };
@@ -30,7 +28,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     historyField: 'slug_history',
     i18n: false,
     slugOptions: {},
-    paranoid: true,
+    paranoid: false,
     ...config
   };
 
@@ -45,8 +43,9 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     validate: {
       isAsync: true,
       validator(val, fn) {
+        console.log(`validator getting called with ${val}`);
         const message =
-          config.i18n && this.locale
+          config.i18n && config.i18n.t && this.locale
             ? config.i18n.t(config.errorMessage, this.locale)
             : config.errorMessage;
         if (!_.isString(val) || s.isBlank(val)) return fn(false, message);
@@ -104,7 +103,9 @@ const mongooseSlugPlugin = (schema, config = {}) => {
       next();
     } catch (error) {
       config.logger.error(error);
-      error.message = config.i18n.t(config.errorMessage, this.locale);
+      if (config.i18n && config.i18n.t && this.locale)
+        error.message = config.i18n.t(config.errorMessage, this.locale);
+      else error.message = config.errorMessage;
       next(error);
     }
   });
