@@ -102,7 +102,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
   });
 
   schema.statics.getUniqueSlug = function(_id, str) {
-    return getUniqueSlug(config.slugField, this.constructor, _id, str);
+    return getUniqueSlug(config.slugField, this, _id, str);
   };
 
   return schema;
