@@ -5,7 +5,6 @@ const _ = require('lodash');
 const slug = require('speakingurl');
 
 const getUniqueSlug = async (config, constructor, _id, str, i = 0) => {
-  console.log(`getUniqueSlug ID: ${_id}, STR: ${str}, I: ${i}`);
   if (s.isBlank(str)) throw new Error('The `str` argument was missing');
   const search = i === 0 ? str : `${str}-${i}`;
   const query = { _id: { $ne: _id } };
@@ -43,7 +42,6 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     validate: {
       isAsync: true,
       validator(val, fn) {
-        console.log(`validator getting called with ${val}`);
         const message =
           config.i18n && config.i18n.t && this.locale
             ? config.i18n.t(config.errorMessage, this.locale)
