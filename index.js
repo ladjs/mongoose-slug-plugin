@@ -1,14 +1,21 @@
+const { callbackify } = require('util');
+
 const s = require('underscore.string');
 const _ = require('lodash');
 const slug = require('speakingurl');
 
-const getUniqueSlug = async (slugField, constructor, _id, str, i = 0) => {
+const getUniqueSlug = async (config, constructor, _id, str, i = 0) => {
+  if (s.isBlank(str)) throw new Error('The `str` argument was missing');
   const search = i === 0 ? str : `${str}-${i}`;
   const query = { _id: { $ne: _id } };
-  query[slugField] = search;
-  const count = await constructor.count(query);
+  const options = {};
+  query[config.slugField] = search;
+  // support paranoid hidden field if it was set
+  if (config.paranoid === 'hidden') query.hidden = { $ne: null };
+  else if (config.paranoid) options.paranoid = false;
+  const count = await constructor.count(query, options);
   if (count === 0) return search;
-  return getUniqueSlug(slugField, constructor, _id, str, i + 1);
+  return getUniqueSlug(config, constructor, _id, str, i + 1);
 };
 
 const mongooseSlugPlugin = (schema, config = {}) => {
@@ -23,6 +30,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     historyField: 'slug_history',
     i18n: false,
     slugOptions: {},
+    paranoid: true,
     ...config
   };
 
@@ -76,7 +84,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
 
       // ensure that the slug is unique
       const uniqueSlug = await getUniqueSlug(
-        config.slugField,
+        config,
         this.constructor,
         this._id,
         this[config.slugField]
@@ -102,8 +110,13 @@ const mongooseSlugPlugin = (schema, config = {}) => {
   });
 
   schema.statics.getUniqueSlug = function(_id, str) {
-    return getUniqueSlug(config.slugField, this, _id, str);
+    str = config.slug(str, config.slugOptions);
+    return getUniqueSlug(config, this, _id, str);
   };
+
+  schema.statics.getUniqueSlugCallback = callbackify(
+    schema.statics.getUniqueSlug
+  );
 
   return schema;
 };

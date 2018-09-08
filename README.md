@@ -146,6 +146,7 @@ Here are the default options passed to the plugin:
 * `i18n` (Object|Boolean) - defaults to `false`, but accepts a `i18n` object from [Lad's i18n][i18n]
 * `slug` (Function) - Defaults to `speakingurl`, but it is a function that converts a string into a slug (see below [Custom Slug Libary](#custom-slug-library) examples)
 * `slugOptions` (Object) - An object of options to pass to the slug function when invoked as specified in `options.slug`
+* `paranoid` (Boolean) - Defaults to `true`, e.g. for use with soft delete support using a plugin such as [mongoose-paranoid-plugin][]), this will set DB operation options with `getUniqueSlug` to have `{ paranoid: false }` (see [index.js][] for more insight)
 
 
 ## Slug Tips
@@ -254,3 +255,5 @@ I created this package despite knowing that other alternatives like it exist for
 [moment]: http://momentjs.com/
 
 [lad]: https://lad.js.org
+
+[mongoose-paranoid-plugin]: https://github.com/euqen/mongoose-paranoid-plugin
