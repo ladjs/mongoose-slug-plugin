@@ -41,6 +41,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     unique: true,
     required: true,
     trim: true,
+    set: config.slug,
     validate: {
       isAsync: true,
       validator(val, fn) {
