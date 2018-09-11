@@ -6,7 +6,7 @@ const slug = require('speakingurl');
 
 const getUniqueSlug = async (config, constructor, _id, str, i = 0) => {
   if (s.isBlank(str)) throw new Error('The `str` argument was missing');
-  const search = i === 0 ? str : `${str}-${i}`;
+  const search = i === 0 ? str : config.slug(`${str}-${i}`, config.slugOptions);
   const query = { _id: { $ne: _id } };
   query[config.slugField] = search;
   if (config.paranoid === 'hidden') query.hidden = { $ne: null };
@@ -38,7 +38,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     unique: true,
     required: true,
     trim: true,
-    set: config.slug,
+    set: val => config.slug(val, config.slugOptions),
     validate: {
       isAsync: true,
       validator(val, fn) {
