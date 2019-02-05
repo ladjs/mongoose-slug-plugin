@@ -10,7 +10,7 @@ const getUniqueSlug = async (config, constructor, _id, str, i = 0) => {
   const query = { _id: { $ne: _id } };
   query[config.slugField] = search;
   if (config.paranoid === 'hidden') query.hidden = { $ne: null };
-  const count = await constructor.count(query);
+  const count = await constructor.countDocuments(query);
   if (count === 0) return search;
   return getUniqueSlug(config, constructor, _id, str, i + 1);
 };
