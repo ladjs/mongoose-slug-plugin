@@ -14,6 +14,7 @@
 
 * [Install](#install)
 * [Usage](#usage)
+* [Static Methods](#static-methods)
 * [Options](#options)
 * [Slug Tips](#slug-tips)
 * [Slug Uniqueness](#slug-uniqueness)
@@ -130,6 +131,28 @@ TODO
 This function accepts an `_id` and `str` argument. The `_id` being the ObjectID of the document and `str` being the slug you're searching for to ensure uniqueness.
 
 This function is used internally by the plugin to recursively ensure uniqueness.
+
+
+## Static Methods
+
+If you have to write a script to automatically set slugs across a collection, you can use the `getUniqueSlug` static method this package exposes on models.
+
+For example, if you want to programmatically set all blog posts to have slugs, run this script (note that you should run the updates serially as the example shows to prevent slug conflicts):
+
+```js
+const Promise = require('bluebird'); // exposes `Promise.each`
+
+const BlogPost = require('../app/models/blog-post.js');
+
+(async () => {
+  const blogPosts = await BlogPost.find({}).lean()exec();
+  await Promise.each(blogPosts, async blogPost => {
+    blogPost.slug = null;
+    blogPost.slug = await BlogPost.getUniqueSlug(blogPost.title);
+    return blogPost.save();
+  }));
+})();
+```
 
 
 ## Options
