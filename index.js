@@ -1,16 +1,17 @@
 const { callbackify } = require('util');
 
-const s = require('underscore.string');
+const isSANB = require('is-string-and-not-blank');
 const _ = require('lodash');
 const slug = require('speakingurl');
 
+// eslint-disable-next-line max-params
 const getUniqueSlug = async (config, constructor, _id, str, i = 0) => {
-  if (s.isBlank(str)) throw new Error('The `str` argument was missing');
+  if (!isSANB(str)) throw new Error('The `str` argument was missing');
   const search = i === 0 ? str : config.slug(`${str}-${i}`, config.slugOptions);
   const query = { _id: { $ne: _id } };
   query[config.slugField] = search;
   if (config.paranoid === 'hidden') query.hidden = { $ne: null };
-  const count = await constructor.count(query);
+  const count = await constructor.countDocuments(query);
   if (count === 0) return search;
   return getUniqueSlug(config, constructor, _id, str, i + 1);
 };
@@ -46,7 +47,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
           config.i18n && config.i18n.t && this.locale
             ? config.i18n.t(config.errorMessage, this.locale)
             : config.errorMessage;
-        if (!_.isString(val) || s.isBlank(val)) return fn(false, message);
+        if (!isSANB(val)) return fn(false, message);
         fn(true);
       }
     }
@@ -65,11 +66,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
       const str = _.template(config.tmpl)(locals);
 
       // set the slug if it is not already set
-      if (
-        !_.isString(this[config.slugField]) ||
-        s.isBlank(this[config.slugField]) ||
-        config.alwaysUpdateSlug
-      ) {
+      if (!isSANB(this[config.slugField]) || config.alwaysUpdateSlug) {
         this[config.slugField] = config.slug(str, config.slugOptions);
       } else {
         // slugify the slug in case we set it manually and not in slug format
@@ -99,12 +96,12 @@ const mongooseSlugPlugin = (schema, config = {}) => {
       this[config.historyField] = _.uniq(this[config.historyField]);
 
       next();
-    } catch (error) {
-      config.logger.error(error);
+    } catch (err) {
+      config.logger.error(err);
       if (config.i18n && config.i18n.t && this.locale)
-        error.message = config.i18n.t(config.errorMessage, this.locale);
-      else error.message = config.errorMessage;
-      next(error);
+        err.message = config.i18n.t(config.errorMessage, this.locale);
+      else err.message = config.errorMessage;
+      next(err);
     }
   });
 
