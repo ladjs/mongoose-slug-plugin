@@ -41,15 +41,18 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     trim: true,
     set: val => config.slug(val, config.slugOptions),
     validate: {
-      isAsync: true,
-      validator(val, fn) {
-        const message =
-          config.i18n && config.i18n.t && this.locale
-            ? config.i18n.t(config.errorMessage, this.locale)
-            : config.errorMessage;
-        if (!isSANB(val)) return fn(false, message);
-        fn(true);
-      }
+      validator: val =>
+        new Promise((resolve, reject) => {
+          const message =
+            config.i18n && config.i18n.t && this.locale
+              ? config.i18n.t(config.errorMessage, this.locale)
+              : config.errorMessage;
+          if (isSANB(val)) {
+            resolve(true);
+          } else {
+            reject(new Error(message));
+          }
+        })
     }
   };
   obj[config.historyField] = [
