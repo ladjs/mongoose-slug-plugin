@@ -56,10 +56,10 @@ BlogPost.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
 module.exports = mongoose.model('BlogPost', BlogPost);
 ```
 
-> If you need to render some custom function in the template string for display purposes, such as outputting a formatted date with [moment][]:
+> If you need to render some custom function in the template string for display purposes, such as outputting a formatted date with [dayjs][]:
 
 ```js
-const moment = require('moment');
+const dayjs = require('dayjs');
 
 const mongooseSlugPlugin = require('mongoose-slug-plugin');
 const mongoose = require('mongoose');
@@ -70,8 +70,8 @@ const BlogPost = new mongoose.Schema({
 });
 
 BlogPost.plugin(mongooseSlugPlugin, {
-  tmpl: "<%=title%>-<%=moment(posted_at).format('YYYY-MM-DD')%>",
-  locals: { moment }
+  tmpl: "<%=title%>-<%=dayjs(posted_at).format('YYYY-MM-DD')%>",
+  locals: { dayjs }
 });
 
 module.exports = mongoose.model('BlogPost', BlogPost);
@@ -160,7 +160,7 @@ const BlogPost = require('../app/models/blog-post.js');
 Here are the default options passed to the plugin:
 
 * `tmpl` (String) - Required, this should be a [lodash template string][lodash-template-string] (e.g. `<%=title%>` to use the blog post title as the slug)
-* `locals` (Object) - Defaults to an empty object, but you can pass a custom object that will be inherited for use in the lodash template string (see above example for how you could use [moment][] to render a document's date formatted in the slug)
+* `locals` (Object) - Defaults to an empty object, but you can pass a custom object that will be inherited for use in the lodash template string (see above example for how you could use [dayjs][] to render a document's date formatted in the slug)
 * `alwaysUpdateSlug` (Boolean) - Defaults to `true` (basically this will re-set the slug to the value it should be based off the template string every time the document is validated (or saved for instance due to pre-save hook in turn calling pre-validate in Mongoose)
 * `errorMessage` (String) - Defaults to `Slug was missing or blank`, this is a String that is returned for failed validation (note that it gets translated based off the `this.locale` field if it is set on the document (see [Lad][] for more insight into how this works))
 * `logger` (Object) - defaults to `console`, but you might want to use [Lad's logger][lad-logger]
@@ -274,6 +274,6 @@ I created this package despite knowing that other alternatives like it exist for
 
 [lad-logger]: https://github.com/ladjs/logger
 
-[moment]: http://momentjs.com/
+[dayjs]: https://github.com/iamkun/dayjs
 
 [lad]: https://lad.js.org

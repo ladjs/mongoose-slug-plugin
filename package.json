@@ -25,22 +25,22 @@
     "speakingurl": "^14.0.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-conventional": "^8.1.0",
-    "ava": "^2.3.0",
-    "codecov": "^3.5.0",
-    "cross-env": "^5.2.1",
-    "eslint": "^6.3.0",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "ava": "^2.4.0",
+    "codecov": "^3.6.1",
+    "cross-env": "^6.0.3",
+    "dayjs": "^1.8.16",
+    "eslint": "^6.5.1",
     "eslint-config-xo-lass": "^1.0.3",
     "fixpack": "^2.3.1",
-    "husky": "^3.0.5",
-    "lint-staged": "^9.2.5",
-    "moment": "^2.24.0",
+    "husky": "^3.0.8",
+    "lint-staged": "^9.4.2",
     "mongoose": "^5.6.11",
     "nyc": "^14.1.1",
     "remark-cli": "^7.0.0",
     "remark-preset-github": "^0.0.16",
-    "xo": "^0.24.0"
+    "xo": "^0.25.3"
   },
   "engines": {
     "node": ">=8.3"
@@ -114,7 +114,7 @@
   },
   "main": "index.js",
   "peerDependencies": {
-    "mongoose": ">=5.2"
+    "mongoose": ">=5.7"
   },
   "prettier": {
     "singleQuote": true,

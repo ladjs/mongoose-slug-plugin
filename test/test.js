@@ -1,5 +1,5 @@
 const test = require('ava');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const mongoose = require('mongoose');
 const slug = require('speakingurl');
 
@@ -19,8 +19,8 @@ const CustomBlogPost = new mongoose.Schema({
   posted_at: { type: Date, required: true }
 });
 CustomBlogPost.plugin(mongooseSlugPlugin, {
-  tmpl: "<%=title%>-<%=moment(posted_at).format('YYYY-MM-DD')%>",
-  locals: { moment }
+  tmpl: "<%=title%>-<%=dayjs(posted_at).format('YYYY-MM-DD')%>",
+  locals: { dayjs }
 });
 const CustomBlogPosts = mongoose.model('CustomBlogPost', CustomBlogPost);
 
@@ -30,7 +30,7 @@ test('custom locals', async t => {
   const blogPost = await CustomBlogPosts.create({ title, posted_at });
   t.is(
     blogPost.slug,
-    slug(`${title}-${moment(posted_at).format('YYYY-MM-DD')}`)
+    slug(`${title}-${dayjs(posted_at).format('YYYY-MM-DD')}`)
   );
 });
 
