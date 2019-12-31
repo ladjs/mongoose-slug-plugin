@@ -41,14 +41,13 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     trim: true,
     set: val => config.slug(val, config.slugOptions),
     validate: {
-      isAsync: true,
-      validator(val, fn) {
+      async validator(val) {
         const message =
           config.i18n && config.i18n.t && this.locale
             ? config.i18n.t(config.errorMessage, this.locale)
             : config.errorMessage;
-        if (!isSANB(val)) return fn(false, message);
-        fn(true);
+        if (!isSANB(val)) throw new Error(message);
+      }
       }
     }
   };
