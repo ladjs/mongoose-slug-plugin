@@ -48,7 +48,6 @@ const mongooseSlugPlugin = (schema, config = {}) => {
             : config.errorMessage;
         if (!isSANB(val)) throw new Error(message);
       }
-      }
     }
   };
   obj[config.historyField] = [
