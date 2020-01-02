@@ -63,53 +63,18 @@ test('increment slugs', async t => {
   t.is(smartBlogPost.slug, `${blogPost.slug}-2`);
 });
 
-/*
 test('custom error message', async t => {
-  const BlogPost = new mongoose.Schema({ title: String });
-  BlogPost.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
-  const BlogPosts = mongoose.model('BlogPost', BlogPost);
-  const title = `Foo${new Date().getTime()}`;
-  const blogPost = await BlogPosts.create({ title });
-  t.is(blogPost.slug, slug(title));
+  const Schema = new mongoose.Schema({ title: String });
+  Schema.plugin(mongooseSlugPlugin, {
+    tmpl: '<%=title%>',
+    errorMessage: 'A custom error message'
+  });
+  const Model = mongoose.model('Custom', Schema);
+  const err = await t.throwsAsync(() => Model.create({}));
+  t.is(err.message, 'A custom error message');
 });
 
-test('custom slug function', async t => {
-  const BlogPost = new mongoose.Schema({ title: String });
-  BlogPost.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
-  const BlogPosts = mongoose.model('BlogPost', BlogPost);
-  const title = `Foo${new Date().getTime()}`;
-  const blogPost = await BlogPosts.create({ title });
-  t.is(blogPost.slug, slug(title));
-});
-
-test('custom slug field', async t => {
-  const BlogPost = new mongoose.Schema({ title: String });
-  BlogPost.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
-  const BlogPosts = mongoose.model('BlogPost', BlogPost);
-  const title = `Foo${new Date().getTime()}`;
-  const blogPost = await BlogPosts.create({ title });
-  t.is(blogPost.slug, slug(title));
-});
-
-test('custom slug history', async t => {
-  const BlogPost = new mongoose.Schema({ title: String });
-  BlogPost.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
-  const BlogPosts = mongoose.model('BlogPost', BlogPost);
-  const title = `Foo${new Date().getTime()}`;
-  const blogPost = await BlogPosts.create({ title });
-  t.is(blogPost.slug, slug(title));
-});
-
-test('support i18n translation using this.locale', async t => {
-  const BlogPost = new mongoose.Schema({ title: String });
-  BlogPost.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' });
-  const BlogPosts = mongoose.model('BlogPost', BlogPost);
-  const title = `Foo${new Date().getTime()}`;
-  const blogPost = await BlogPosts.create({ title });
-  t.is(blogPost.slug, slug(title));
-});
-
-test('custom slug options', async t => {
-  // TODO: finish this
-});
-*/
+test.todo('custom slug function');
+test.todo('custom slug field');
+test.todo('custom slug history');
+test.todo('custom slug options');

@@ -16,8 +16,8 @@ const getUniqueSlug = async (config, constructor, _id, str, i = 0) => {
   return getUniqueSlug(config, constructor, _id, str, i + 1);
 };
 
-const mongooseSlugPlugin = (schema, config = {}) => {
-  config = {
+const mongooseSlugPlugin = (schema, options = {}) => {
+  const config = {
     tmpl: '',
     locals: {},
     alwaysUpdateSlug: true,
@@ -29,7 +29,7 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     i18n: false,
     slugOptions: {},
     paranoid: false,
-    ...config
+    ...options
   };
 
   const obj = {};
@@ -41,14 +41,13 @@ const mongooseSlugPlugin = (schema, config = {}) => {
     trim: true,
     set: val => config.slug(val, config.slugOptions),
     validate: {
-      isAsync: true,
-      validator(val, fn) {
+      validator(val) {
         const message =
           config.i18n && config.i18n.t && this.locale
             ? config.i18n.t(config.errorMessage, this.locale)
             : config.errorMessage;
-        if (!isSANB(val)) return fn(false, message);
-        fn(true);
+        if (!isSANB(val)) return Promise.reject(message);
+        Promise.resolve(true);
       }
     }
   };
