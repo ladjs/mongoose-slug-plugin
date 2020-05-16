@@ -145,10 +145,10 @@ const Promise = require('bluebird'); // exposes `Promise.each`
 const BlogPost = require('../app/models/blog-post.js');
 
 (async () => {
-  const blogPosts = await BlogPost.find({}).lean()exec();
+  const blogPosts = await BlogPost.find({}).exec();
   await Promise.each(blogPosts, async blogPost => {
     blogPost.slug = null;
-    blogPost.slug = await BlogPost.getUniqueSlug(blogPost.title);
+    blogPost.slug = await BlogPost.getUniqueSlug(blogPost._id, blogPost.title);
     return blogPost.save();
   }));
 })();
