@@ -1,7 +1,7 @@
 {
   "name": "mongoose-slug-plugin",
   "description": "Slugs for Mongoose with history and i18n support (uses speakingurl by default, but you can use any slug library such as limax, slugify, mollusc, or slugme)",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "author": "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
   "ava": {
     "failFast": true,
