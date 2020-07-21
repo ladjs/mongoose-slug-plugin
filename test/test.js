@@ -113,7 +113,7 @@ test('custom slug history', async t => {
   t.true(Array.isArray(blogPost.toObject().slug_history));
 });
 
-test('getUnqiueSlug static', async t => {
+test('getUniqueSlug static', async t => {
   const blogPost = await BlogPosts.create({ title: 'getUniqueSlug static' });
 
   t.is(
@@ -122,7 +122,7 @@ test('getUnqiueSlug static', async t => {
   );
 });
 
-test('getUnqiueSlug static > no str', async t => {
+test('getUniqueSlug static > no str', async t => {
   const blogPost = await BlogPosts.create({ title: 'getUniqueSlug no str' });
 
   await t.throwsAsync(async () => BlogPosts.getUniqueSlug(blogPost._id), {
@@ -130,7 +130,7 @@ test('getUnqiueSlug static > no str', async t => {
   });
 });
 
-test('getUnqiueSlug static > hidden', async t => {
+test('getUniqueSlug static > hidden', async t => {
   const Schema = new mongoose.Schema({ title: String });
   Schema.plugin(mongooseSlugPlugin, {
     paranoid: 'hidden',
