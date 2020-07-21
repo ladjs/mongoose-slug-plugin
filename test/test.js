@@ -74,7 +74,78 @@ test('custom error message', async t => {
   t.is(err.message, 'A custom error message');
 });
 
+test('error message is translated', async t => {
+  const Schema = new mongoose.Schema({ title: String, locale: String });
+  Schema.plugin(mongooseSlugPlugin, {
+    tmpl: '<%=title%>',
+    errorMessage: 'A custom error message',
+    i18n: {
+      t: message => message
+    }
+  });
+  const Model = mongoose.model('CustomErrorTranslate', Schema);
+  await t.throwsAsync(() => Model.create({ locale: 'en' }), {
+    message: 'A custom error message'
+  });
+});
+
+test('custom slug field', async t => {
+  const Schema = new mongoose.Schema({ title: String });
+  Schema.plugin(mongooseSlugPlugin, {
+    tmpl: '<%=title%>',
+    alwaysUpdateSlug: false
+  });
+  const Model = mongoose.model('CustomSlugField', Schema);
+
+  const title = 'custom slug field';
+  const model = await Model.create({ title, slug: 'this slugged' });
+
+  t.is(model.slug, slug('this slugged'));
+});
+
+test('custom slug history', async t => {
+  const title = 'custom slug history';
+  let blogPost = await BlogPosts.create({ title });
+
+  blogPost.slug_history = undefined;
+  blogPost = await blogPost.save();
+
+  t.true(Array.isArray(blogPost.toObject().slug_history));
+});
+
+test('getUnqiueSlug static', async t => {
+  const blogPost = await BlogPosts.create({ title: 'getUniqueSlug static' });
+
+  t.is(
+    await BlogPosts.getUniqueSlug(blogPost._id, 'this slugged'),
+    slug('this slugged')
+  );
+});
+
+test('getUnqiueSlug static > no str', async t => {
+  const blogPost = await BlogPosts.create({ title: 'getUniqueSlug no str' });
+
+  await t.throwsAsync(async () => BlogPosts.getUniqueSlug(blogPost._id), {
+    message: 'The `str` argument was missing'
+  });
+});
+
+test('getUnqiueSlug static > hidden', async t => {
+  const Schema = new mongoose.Schema({ title: String });
+  Schema.plugin(mongooseSlugPlugin, {
+    paranoid: 'hidden',
+    tmpl: '<%=title%>'
+  });
+
+  const Models = mongoose.model('Hidden', Schema);
+
+  const model = await Models.create({ title: 'getUniqueSlug hidden' });
+
+  t.is(
+    await Models.getUniqueSlug(model._id, 'this slugged'),
+    slug('this slugged')
+  );
+});
+
 test.todo('custom slug function');
-test.todo('custom slug field');
-test.todo('custom slug history');
 test.todo('custom slug options');
