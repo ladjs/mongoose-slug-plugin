@@ -17,7 +17,8 @@
     ]
   },
   "contributors": [
-    "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)"
+    "Nick Baugh <niftylettuce@gmail.com> (http://niftylettuce.com/)",
+    "shadowgate15 (https://github.com/shadowgate15)"
   ],
   "dependencies": {
     "is-string-and-not-blank": "^0.0.2",

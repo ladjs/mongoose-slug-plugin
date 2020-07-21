@@ -236,9 +236,10 @@ I created this package despite knowing that other alternatives like it exist for
 
 ## Contributors
 
-| Name           | Website                    |
-| -------------- | -------------------------- |
-| **Nick Baugh** | <http://niftylettuce.com/> |
+| Name             | Website                           |
+| ---------------- | --------------------------------- |
+| **Nick Baugh**   | <http://niftylettuce.com/>        |
+| **shadowgate15** | <https://github.com/shadowgate15> |
 
 
 ## License
