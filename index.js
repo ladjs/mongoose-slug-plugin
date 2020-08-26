@@ -53,12 +53,13 @@ const mongooseSlugPlugin = (schema, options = {}) => {
   };
   if (config.historyField) {
     obj[config.historyField] = [
-        {
+      {
         type: String,
         index: true
-        }
+      }
     ];
   }
+
   schema.add(obj);
 
   schema.pre('validate', async function(next) {
@@ -89,7 +90,7 @@ const mongooseSlugPlugin = (schema, options = {}) => {
       if (config.historyField) {
         // create slug history if it does not exist yet
         if (!Array.isArray(this[config.historyField]))
-            this[config.historyField] = [];
+          this[config.historyField] = [];
 
         // add the slug to the slug_history
         this[config.historyField].push(this[config.slugField]);
