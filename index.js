@@ -51,12 +51,14 @@ const mongooseSlugPlugin = (schema, options = {}) => {
       }
     }
   };
-  obj[config.historyField] = [
-    {
-      type: String,
-      index: true
-    }
-  ];
+  if (config.historyField) {
+    obj[config.historyField] = [
+        {
+        type: String,
+        index: true
+        }
+    ];
+  }
   schema.add(obj);
 
   schema.pre('validate', async function(next) {
@@ -84,15 +86,17 @@ const mongooseSlugPlugin = (schema, options = {}) => {
       );
       this[config.slugField] = uniqueSlug;
 
-      // create slug history if it does not exist yet
-      if (!Array.isArray(this[config.historyField]))
-        this[config.historyField] = [];
+      if (config.historyField) {
+        // create slug history if it does not exist yet
+        if (!Array.isArray(this[config.historyField]))
+            this[config.historyField] = [];
 
-      // add the slug to the slug_history
-      this[config.historyField].push(this[config.slugField]);
+        // add the slug to the slug_history
+        this[config.historyField].push(this[config.slugField]);
 
-      // make the slug history unique
-      this[config.historyField] = _.uniq(this[config.historyField]);
+        // make the slug history unique
+        this[config.historyField] = _.uniq(this[config.historyField]);
+      }
 
       next();
     } catch (err) {
