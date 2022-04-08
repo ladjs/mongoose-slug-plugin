@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "is-string-and-not-blank": "^0.0.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "speakingurl": "^14.0.1"
   },
   "devDependencies": {
